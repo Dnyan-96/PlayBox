@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>PlayBox — Offline Arcade</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Header -->
+    <header class="topbar">
+      <div class="brand" id="btnHome" role="button" tabindex="0" aria-label="PlayBox Home">
+        <div class="brand-logo">🎮</div>
+        <div>
+          <h1>PlayBox</h1>
+          <span class="badge-offline" id="netStatus">● Offline Ready</span>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <button id="btnInstall" class="btn btn-install hidden" title="Install App">⬇ Install</button>
+        <button id="btnSound" class="icon-btn" title="Toggle Sound" aria-label="Toggle Sound">🔊</button>
+        <button id="btnPlayers" class="icon-btn" title="Player Names" aria-label="Player Names">👥</button>
+        <button id="btnStats" class="icon-btn" title="Stats & Backup" aria-label="Stats and Backup">🏆</button>
+      </div>
+    </header>
+
+    <!-- LOBBY VIEW -->
+    <main id="lobbyView" class="view active">
+      <section class="hero-banner">
+        <div class="hero-text">
+          <h2>Pocket Arcade. Zero Wi-Fi Needed.</h2>
+          <p>Challenge smart AI solo or pass &amp; play with a friend on one screen.</p>
+        </div>
+        <div class="mode-filter" role="tablist">
+          <button class="filter-pill active" data-filter="all">All Games (4)</button>
+          <button class="filter-pill" data-filter="1p">1 Player</button>
+          <button class="filter-pill" data-filter="2p">2 Players Local</button>
+        </div>
+      </section>
+
+      <section class="game-grid" id="gameGrid">
+        <!-- Tic-Tac-Toe -->
+        <article class="game-card card-pink" data-game="tictactoe" data-modes="1p 2p">
+          <div class="card-badge">1P / 2P</div>
+          <div class="card-icon">❌⭕</div>
+          <h3>Neon Tic-Tac-Toe</h3>
+          <p>Classic 3×3 grid with unbeatable Minimax AI or rapid 2-player duels.</p>
+          <div class="card-footer">
+            <span class="stat-pill" id="stat-tictactoe">Wins: 0</span>
+            <button class="btn btn-play">Play →</button>
+          </div>
+        </article>
+
+        <!-- Connect 4 -->
+        <article class="game-card card-amber" data-game="connect4" data-modes="1p 2p">
+          <div class="card-badge">1P / 2P</div>
+          <div class="card-icon">🟡🔴</div>
+          <h3>Cyber Connect 4</h3>
+          <p>Drop glowing discs to link four in a row against tactical AI or a rival.</p>
+          <div class="card-footer">
+            <span class="stat-pill" id="stat-connect4">Wins: 0</span>
+            <button class="btn btn-play">Play →</button>
+          </div>
+        </article>
+
+        <!-- Memory Match -->
+        <article class="game-card card-cyan" data-game="memory" data-modes="1p 2p">
+          <div class="card-badge">1P / 2P</div>
+          <div class="card-icon">🃏⚡</div>
+          <h3>Emoji Flip Match</h3>
+          <p>Test your recall solo against the clock or steal pairs in 2P turn battle.</p>
+          <div class="card-footer">
+            <span class="stat-pill" id="stat-memory">Best: --</span>
+            <button class="btn btn-play">Play →</button>
+          </div>
+        </article>
+
+        <!-- Neon Snake -->
+        <article class="game-card card-emerald" data-game="snake" data-modes="1p 2p">
+          <div class="card-badge">1P / 2P</div>
+          <div class="card-icon">🐍💎</div>
+          <h3>Neon Snake Arena</h3>
+          <p>Solo endless high-score chase or 2-player simultaneous head-to-head survival.</p>
+          <div class="card-footer">
+            <span class="stat-pill" id="stat-snake">High: 0</span>
+            <button class="btn btn-play">Play →</button>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <!-- ACTIVE GAME STAGE -->
+    <section id="stageView" class="view hidden">
+      <div class="stage-header">
+        <button id="btnBackLobby" class="btn btn-secondary">← Lobby</button>
+        <h2 id="stageTitle">Game Title</h2>
+        <div class="mode-switch">
+          <button id="btnMode1P" class="mode-btn active">🤖 1P vs AI</button>
+          <button id="btnMode2P" class="mode-btn">👥 2P Local</button>
+        </div>
+      </div>
+
+      <div class="scoreboard-bar" id="scoreboardBar">
+        <div class="player-pill p1">
+          <span class="p-dot"></span>
+          <span id="p1Label">Player 1</span>
+          <strong id="p1Score">0</strong>
+        </div>
+        <div class="turn-indicator" id="turnIndicator">Your Turn</div>
+        <div class="player-pill p2">
+          <span class="p-dot"></span>
+          <span id="p2Label">AI Bot</span>
+          <strong id="p2Score">0</strong>
+        </div>
+      </div>
+
+      <!-- Dynamic Game Canvas/Board Container -->
+      <div id="gameContainer" class="game-container"></div>
+
+      <div class="stage-controls">
+        <button id="btnRestartGame" class="btn btn-primary">↻ New Round</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- PLAYER PROFILES MODAL -->
+  <div id="playersModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>👥 Local Player Names</h3>
+        <button class="icon-btn close-modal">✕</button>
+      </div>
+      <div class="form-group">
+        <label for="inputP1">Player 1 Name</label>
+        <input type="text" id="inputP1" maxlength="16" placeholder="Player 1" />
+      </div>
+      <div class="form-group">
+        <label for="inputP2">Player 2 Name (2P Mode)</label>
+        <input type="text" id="inputP2" maxlength="16" placeholder="Player 2" />
+      </div>
+      <button id="btnSavePlayers" class="btn btn-primary full-width">Save Profiles</button>
+    </div>
+  </div>
+
+  <!-- STATS & BACKUP MODAL -->
+  <div id="statsModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>🏆 Arcade Records &amp; Backup</h3>
+        <button class="icon-btn close-modal">✕</button>
+      </div>
+      <div id="statsList" class="stats-list"></div>
+      <div class="backup-actions">
+        <button id="btnExportData" class="btn btn-secondary">⬇ Export JSON</button>
+        <label class="btn btn-secondary file-label">
+          ⬆ Import JSON
+          <input type="file" id="inputImportData" accept=".json" hidden />
+        </label>
+        <button id="btnResetData" class="btn btn-danger">🗑 Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./js/db.js"></script>
+  <script src="./js/sound.js"></script>
+  <script src="./js/games/tictactoe.js"></script>
+  <script src="./js/games/connect4.js"></script>
+  <script src="./js/games/memory.js"></script>
+  <script src="./js/games/snake.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
