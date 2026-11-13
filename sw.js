@@ -3,14 +3,14 @@ const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './css/styles.css',
-  './js/db.js',
-  './js/sound.js',
-  './js/app.js',
-  './js/games/tictactoe.js',
-  './js/games/connect4.js',
-  './js/games/memory.js',
-  './js/games/snake.js'
+  './styles.css',
+  './db.js',
+  './sound.js',
+  './app.js',
+  './tictactoe.js',
+  './connect4.js',
+  './memory.js',
+  './snake.js'
 ];
 
 self.addEventListener('install', (event) => {
